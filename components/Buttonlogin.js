@@ -1,13 +1,10 @@
 import Link from "next/link";
 
-const Buttonlogin = ({ IsLoggedIn, Name, extraStyle? }) => {
+const Buttonlogin = ({ IsLoggedIn, Name, extraStyle = "" }) => {
   console.log(extraStyle);
   if (IsLoggedIn) {
     return (
-      <Link
-        href="/dashboard"
-        className={`btn btn-primary " ${extraStyle ? extraStyle : ""}`}
-      >
+      <Link href="/dashboard" className={`btn btn-primary ${extraStyle}`}>
         Welcome Back {Name}
       </Link>
     );
@@ -15,4 +12,5 @@ const Buttonlogin = ({ IsLoggedIn, Name, extraStyle? }) => {
     return <button>Login</button>;
   }
 };
+
 export default Buttonlogin;
