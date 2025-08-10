@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const Buttonlogin = ({ IsLoggedIn, Name, extraStyle }) => {
+const Buttonlogin = ({ IsLoggedIn, Name, extraStyle? }) => {
   console.log(extraStyle);
   if (IsLoggedIn) {
     return (
