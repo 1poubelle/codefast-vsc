@@ -36,7 +36,7 @@ export default function Home() {
           <h1 className="lg:text-5xl text-center font-extrabold mb-6">
             Best title ever
           </h1>
-          <div className=" opacity-90 mb-10">Best description ever</div>
+          <div className=" opacity-90 mb-10">Best description ever okokok</div>
           <Buttonlogin IsLoggedIn={IsLoggedIn} Name={Name} />
         </div>
       </section>
