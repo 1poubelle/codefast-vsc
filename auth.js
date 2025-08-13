@@ -1,16 +1,26 @@
 import NextAuth from "next-auth";
+import GithubProvider from "next-auth/providers/github";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import clientPromise from "./libs/mango";
-import Resend from "next-auth/providers/resend";
+import clientPromise from "./libs/mongo";
+import Resend from "@auth/core/providers/resend";
 
 const config = {
   providers: [
+    GithubProvider({
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET,
+    }),
     Resend({
       apiKey: process.env.RESEND_API_KEY,
       from: "noreply@imran.club",
       name: "email",
     }),
   ],
+
   adapter: MongoDBAdapter(clientPromise),
 };
-export const { handlers, signIn, signOut, auth } = NextAuth(config);
+
+const handler = NextAuth(config);
+
+export { handler as GET, handler as POST };
+export const auth = handler.auth; // Fixed auth export
