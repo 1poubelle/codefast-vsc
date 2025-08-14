@@ -2,10 +2,17 @@ import Buttonlogin from "@/components/Buttonlogin";
 import FAQListItems from "@/components/FAQLisItems";
 import Image from "next/image";
 import ProductDemojpeg from "@/app/productDemo.jpeg";
-export default function Home() {
-  const IsLoggedIn = true;
-  const Name = "Ana";
+
+import { getServerSession } from "next-auth/next";
+
+import { auth } from "@/auth";
+
+export default async function Home() {
   const pricingFeatureList = ["a", "b", "c", "d"];
+
+  const session = await auth();
+  // You can either remove the console.log if not needed
+  // or if you want to log the session safely:
   return (
     <main>
       {/* header */}
@@ -21,7 +28,7 @@ export default function Home() {
             </a>
           </div>
           <div className="">
-            <Buttonlogin IsLoggedIn={IsLoggedIn} Name={Name} />
+            <Buttonlogin session={session} />
           </div>
         </div>
       </section>
@@ -37,7 +44,7 @@ export default function Home() {
             Best title ever
           </h1>
           <div className=" opacity-90 mb-10">Best description ever okokok</div>
-          <Buttonlogin IsLoggedIn={IsLoggedIn} Name={Name} />
+          <Buttonlogin session={session} />
         </div>
       </section>
       {/* PRICING */}
@@ -80,11 +87,7 @@ export default function Home() {
               );
             })}
           </ul>
-          <Buttonlogin
-            IsLoggedIn={IsLoggedIn}
-            Name={Name}
-            extraStyle="w-full"
-          />
+          <Buttonlogin session={session} extraStyle="w-full" />
         </div>
       </section>
       {/* FAQ */}
