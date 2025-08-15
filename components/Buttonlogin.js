@@ -15,8 +15,8 @@ const Buttonlogin = ({ session, extraStyle = "" }) => {
     return (
       <button
         className={`btn btn-primary ${extraStyle}`}
-        onclick={() => {
-          signIn("indefined", { callbackUrl: dashboardUrl });
+        onClick={() => {
+          signIn(undefined, { callbackUrl: dashboardUrl });
         }}
       >
         Login

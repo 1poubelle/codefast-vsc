@@ -1,5 +1,5 @@
 import Buttonlogin from "@/components/Buttonlogin";
-import FAQListItems from "@/components/FAQLisItems";
+import FAQListItems from "@/components/FAQListItems";
 import Image from "next/image";
 import ProductDemojpeg from "@/app/productDemo.jpeg";
 
