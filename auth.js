@@ -23,4 +23,4 @@ const config = {
 const handler = NextAuth(config);
 
 export { handler as GET, handler as POST };
-export const auth = handler.auth; // Fixed auth export
+export { signIn, signOut } from "next-auth/react";
