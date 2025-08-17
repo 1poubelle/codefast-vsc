@@ -3,16 +3,17 @@ import FAQListItems from "@/components/FAQListItems";
 import Image from "next/image";
 import ProductDemojpeg from "@/app/productDemo.jpeg";
 
-import { getServerSession } from "next-auth/next";
-
-import { auth } from "@/auth";
+import { authOptions } from "@/auth"; // import JS
+import NextAuth from "next-auth"; // on utilise directement le handler
 
 export default async function Home() {
+  // Utiliser le handler NextAuth pour récupérer la session côté serveur
+  const session = await fetch("/api/auth/session")
+    .then((res) => res.json())
+    .catch(() => null);
+
   const pricingFeatureList = ["a", "b", "c", "d"];
 
-  const session = await auth();
-  // You can either remove the console.log if not needed
-  // or if you want to log the session safely:
   return (
     <main>
       {/* header */}

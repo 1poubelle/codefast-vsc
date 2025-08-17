@@ -5,10 +5,11 @@ import { signIn } from "next-auth/react";
 const Buttonlogin = ({ session, extraStyle = "" }) => {
   console.log(extraStyle);
   const dashboardUrl = "/dashboard";
+  
   if (session) {
     return (
       <Link href={dashboardUrl} className={`btn btn-primary ${extraStyle}`}>
-        Welcome Back {session.user.name || ""}
+        Welcome Back {session.user.name || session.user.email || ""}
       </Link>
     );
   } else {

@@ -1,28 +1,45 @@
-import NextAuth from "next-auth";
-<<<<<<< HEAD
-import Resend from "@auth/core/providers/resend";
+// /auth.js
+import EmailProvider from "next-auth/providers/email";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "./libs/mongo";
-=======
-import GithubProvider from "next-auth/providers/github";
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import clientPromise from "./libs/mongo";
-import Resend from "@auth/core/providers/resend";
->>>>>>> f64569f (ok)
+import { Resend } from "resend";
 
-export const config = {
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export const authOptions = {
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID,
-      clientSecret: process.env.GITHUB_SECRET,
-    }),
-    Resend({
-      apiKey: process.env.RESEND_API_KEY,
+    EmailProvider({
+      server: {
+        host: "smtp.resend.com",
+        port: 587,
+        auth: {
+          user: "resend",
+          pass: process.env.RESEND_API_KEY,
+        },
+      },
       from: "noreply@resend.imran.club",
-      name: "email",
+      sendVerificationRequest: async ({ identifier, url, provider }) => {
+        try {
+          await resend.emails.send({
+            from: provider.from,
+            to: identifier,
+            subject: 'Sign in to CodeFast SaaS',
+            html: `
+              <div>
+                <h1>Sign in to CodeFast SaaS</h1>
+                <p>Click the link below to sign in:</p>
+                <a href="${url}">Sign in</a>
+                <p>If you didn't request this email, you can safely ignore it.</p>
+              </div>
+            `,
+          });
+        } catch (error) {
+          console.error('Error sending email:', error);
+          throw new Error('Failed to send verification email');
+        }
+      },
     }),
   ],
-
   adapter: MongoDBAdapter(clientPromise),
   pages: {
     signIn: "/auth/signin",
@@ -30,16 +47,12 @@ export const config = {
   session: {
     strategy: "jwt",
   },
+  callbacks: {
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
+  },
 };
-
-<<<<<<< HEAD
-export const {
-  handlers: { GET, POST },
-  auth,
-} = NextAuth(config);
-=======
-const handler = NextAuth(config);
-
-export { handler as GET, handler as POST };
-export const auth = handler.auth; // Fixed auth export
->>>>>>> f64569f (ok)
