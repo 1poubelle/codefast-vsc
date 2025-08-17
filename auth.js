@@ -1,13 +1,4 @@
-// /auth.js
-import EmailProvider from "next-auth/providers/email";
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import clientPromise from "./libs/mongo";
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export const authOptions = {
-  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     EmailProvider({
       server: {
@@ -56,4 +47,5 @@ export const authOptions = {
       return session;
     },
   },
+  secret: process.env.NEXTAUTH_SECRET, // <-- ajouté
 };
