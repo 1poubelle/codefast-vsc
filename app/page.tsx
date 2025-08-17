@@ -18,7 +18,7 @@ export default async function Home() {
       {/* header */}
       <section className="bg-base-200 ">
         <div className="bg-base-200 flex justify-between items-center px-8 py-2 max-w-5xl mx-auto">
-          <div className=" font-bold">CodeFastSaas</div>
+          <div className=" font-bold">CodeFast SaaS</div>
           <div className="space-x-4  max-md:hidden">
             <a className=" link link-hover" href="#pricing">
               Pricing
@@ -41,9 +41,12 @@ export default async function Home() {
         />
         <div>
           <h1 className="lg:text-5xl text-center font-extrabold mb-6">
-            Best title ever
+            Build Your SaaS Faster Than Ever
           </h1>
-          <div className=" opacity-90 mb-10">Best description ever okokok</div>
+          <div className=" opacity-90 mb-10">
+            Launch your next SaaS product in days, not months. Complete authentication, 
+            payments, and dashboard - all ready to customize and deploy.
+          </div>
           <Buttonlogin session={session} />
         </div>
       </section>
@@ -55,7 +58,7 @@ export default async function Home() {
           Pricing
         </p>
         <h2 className="lg:text-3xl text-center font-extrabold mb-30">
-          A pricing that adapts to your needs
+          Simple, Transparent Pricing
         </h2>
         <div className=" space-y-6 mt-8 items-baseline bg-white p-6 rounded-2xl shadow w-80 mx-auto">
           <div className="mb-4">
