@@ -3,8 +3,7 @@ import FAQListItems from "@/components/FAQListItems";
 import Image from "next/image";
 import ProductDemojpeg from "@/app/productDemo.jpeg";
 
-import { authOptions } from "@/auth"; // import JS
-import NextAuth from "next-auth"; // on utilise directement le handler
+// Removed unused imports
 
 export default async function Home() {
   // Utiliser le handler NextAuth pour récupérer la session côté serveur

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -40,7 +40,7 @@ export default function SignIn() {
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900">Sign in to CodeFast SaaS</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Enter your email address and we'll send you a sign-in link
+            Enter your email address and we&apos;ll send you a sign-in link
           </p>
         </div>
         
