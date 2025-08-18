@@ -2,14 +2,12 @@ import Buttonlogin from "@/components/Buttonlogin";
 import FAQListItems from "@/components/FAQListItems";
 import Image from "next/image";
 import ProductDemojpeg from "@/app/productDemo.jpeg";
-
-// Removed unused imports
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/auth";
 
 export default async function Home() {
-  // Utiliser le handler NextAuth pour récupérer la session côté serveur
-  const session = await fetch("/api/auth/session")
-    .then((res) => res.json())
-    .catch(() => null);
+  // Get session server-side using NextAuth v4
+  const session = await getServerSession(authOptions);
 
   const pricingFeatureList = ["a", "b", "c", "d"];
 
