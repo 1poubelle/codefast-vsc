@@ -19,11 +19,27 @@ export async function POST(req) {
         await connectMongo();
         const user = await User.findById(session.user.id);
 
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
         
-        const board = await Board.create({ name: body.name, userId: user._id });
+        const board = await Board.create({ 
+            name: body.name, 
+            description: body.description || "",
+            category: body.category || "feedback",
+            userId: user._id 
+        });
+        
+        // Add board to user's boards array
+        user.boards.push(board._id);
         await user.save();
-        return NextResponse.json({ board });
+        
+        return NextResponse.json({ 
+            board,
+            message: "Board created successfully" 
+        });
     } catch (error) {
+        console.error("Board creation error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
     
