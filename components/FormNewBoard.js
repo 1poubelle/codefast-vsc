@@ -114,7 +114,7 @@ const FormNewBoard = () => {
                                 rows="3"
                             />
                             <label className="label">
-                                <span className="label-text-alt">Optional: Help users understand what feedback you're looking for</span>
+                                <span className="label-text-alt">Optional: Help users understand what feedback you&apos;re looking for</span>
                             </label>
                         </div>
 
