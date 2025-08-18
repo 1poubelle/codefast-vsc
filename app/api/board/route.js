@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/auth";
 import connectMongo from "@/libs/mongoose";
 import Board from "@/models/Board";
 import User from "@/models/Users";
-import { use } from "react";
 
 
 export async function POST(req) {
@@ -12,7 +12,7 @@ export async function POST(req) {
         if (!body.name) {
             return NextResponse.json({ error: "Board Name is required" }, { status: 400 });
         }
-        const session = await auth();
+        const session = await getServerSession(authOptions);
         if (!session) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
@@ -22,8 +22,9 @@ export async function POST(req) {
         
         const board = await Board.create({ name: body.name, userId: user._id });
         await user.save();
-        return NextResponse.json({});
+        return NextResponse.json({ board });
     } catch (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
+    
 }
