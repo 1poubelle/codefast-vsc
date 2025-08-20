@@ -1,4 +1,4 @@
-import ButtonLogout from "../../components/ButtonLogout";
+import ButtonLogout from "../../components/Buttonlogout";
 import FormNewBoard from "../../components/FormNewBoard";
 export default function dashboard() {
   return (
