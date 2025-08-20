@@ -28,38 +28,20 @@ const FormNewBoard = () => {
         
         setIsLoading(true);
         try {
-            const response = await axios.post('/api/board', {
+            const { data } = await axios.post('/api/board', {
                 name: formData.boardName.trim(),
                 description: formData.description.trim(),
                 category: formData.category
             });
-
-            const data = response.data;
             
-            // Reset form after successful creation
-            setFormData({
-                boardName: '',
-                description: '',
-                category: 'feedback'
-            });
-            
+            // Reset form and show success
+            setFormData({ boardName: '', description: '', category: 'feedback' });
             alert('Board created successfully!');
             console.log('Board created:', data.board);
             
         } catch (error) {
-            console.error('Error creating board:', error);
-            
-            // Handle axios error structure
             const errorMessage = error.response?.data?.error || error.message || 'Failed to create board';
-            
-            // Handle specific error cases
-            if (errorMessage.includes('Unauthorized')) {
-                alert('Please sign in to create a board.');
-            } else if (errorMessage.includes('required')) {
-                alert('Board name is required.');
-            } else {
-                alert(`Failed to create board: ${errorMessage}`);
-            }
+            alert(errorMessage.includes('Unauthorized') ? 'Please sign in to create a board.' : `Failed to create board: ${errorMessage}`);
         } finally {
             setIsLoading(false);
         }
