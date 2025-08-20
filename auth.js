@@ -51,10 +51,53 @@ export const authOptions = {
   },
   callbacks: {
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.sub;
+      if (token && session?.user?.email) {
+        try {
+          const { default: connectMongo } = await import('./libs/mongoose');
+          const { default: User } = await import('./models/Users');
+          
+          await connectMongo();
+          const customUser = await User.findOne({ email: session.user.email });
+          
+          if (customUser) {
+            session.user.id = customUser._id.toString();
+          } else {
+            session.user.id = token.sub;
+          }
+        } catch (error) {
+          console.error('Error in session callback:', error);
+          session.user.id = token.sub;
+        }
       }
       return session;
+    },
+    async signIn({ user, account, profile, email, credentials }) {
+      // Ensure user exists in our custom User model
+      if (account?.provider === 'email') {
+        try {
+          const { default: connectMongo } = await import('./libs/mongoose');
+          const { default: User } = await import('./models/Users');
+          
+          await connectMongo();
+          
+          // Check if user exists in our custom model
+          let customUser = await User.findOne({ email: user.email });
+          
+          if (!customUser) {
+            // Create user in our custom model
+            customUser = await User.create({
+              email: user.email,
+              name: user.name || '',
+              image: user.image || '',
+              boards: []
+            });
+            console.log('Created custom user:', customUser._id);
+          }
+        } catch (error) {
+          console.error('Error syncing user:', error);
+        }
+      }
+      return true;
     },
   },
   secret: process.env.NEXTAUTH_SECRET, // <-- ajouté

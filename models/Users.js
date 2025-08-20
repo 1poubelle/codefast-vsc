@@ -12,14 +12,14 @@ const userSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-   },
-   boards: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Board",
-   }],
-
-   },
-);
+    },
+    boards: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Board",
+    }],
+}, {
+    timestamps: true,
+});
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
