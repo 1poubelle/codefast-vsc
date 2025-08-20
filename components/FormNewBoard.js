@@ -1,6 +1,7 @@
 
 'use client';
 import { useState } from 'react';
+import axios from 'axios';
 
 const FormNewBoard = () => {
     const [formData, setFormData] = useState({
@@ -27,23 +28,13 @@ const FormNewBoard = () => {
         
         setIsLoading(true);
         try {
-            const response = await fetch('/api/board', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: formData.boardName.trim(),
-                    description: formData.description.trim(),
-                    category: formData.category
-                }),
+            const response = await axios.post('/api/board', {
+                name: formData.boardName.trim(),
+                description: formData.description.trim(),
+                category: formData.category
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to create board');
-            }
+            const data = response.data;
             
             // Reset form after successful creation
             setFormData({
@@ -58,13 +49,16 @@ const FormNewBoard = () => {
         } catch (error) {
             console.error('Error creating board:', error);
             
+            // Handle axios error structure
+            const errorMessage = error.response?.data?.error || error.message || 'Failed to create board';
+            
             // Handle specific error cases
-            if (error.message.includes('Unauthorized')) {
+            if (errorMessage.includes('Unauthorized')) {
                 alert('Please sign in to create a board.');
-            } else if (error.message.includes('required')) {
+            } else if (errorMessage.includes('required')) {
                 alert('Board name is required.');
             } else {
-                alert(`Failed to create board: ${error.message}`);
+                alert(`Failed to create board: ${errorMessage}`);
             }
         } finally {
             setIsLoading(false);
