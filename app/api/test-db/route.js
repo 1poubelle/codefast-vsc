@@ -19,16 +19,14 @@ export async function GET() {
             status: "success",
             connectionState: states[connectionState],
             message: "Database connection test successful",
-            mongoUri: process.env.MONGODB_URI ? "MONGODB_URI is set" : "MONGODB_URI not found",
-            mongoUriAlt: process.env.MONGO_URI ? "MONGO_URI is set" : "MONGO_URI not found"
+            mongoUri: process.env.MONGODB_URI ? "MONGODB_URI is set" : "MONGODB_URI not found"
         });
     } catch (error) {
         console.error("Database test error:", error);
         return NextResponse.json({ 
             status: "error",
             error: error.message,
-            mongoUri: process.env.MONGODB_URI ? "MONGODB_URI is set" : "MONGODB_URI not found",
-            mongoUriAlt: process.env.MONGO_URI ? "MONGO_URI is set" : "MONGO_URI not found"
+            mongoUri: process.env.MONGODB_URI ? "MONGODB_URI is set" : "MONGODB_URI not found"
         }, { status: 500 });
     }
 }

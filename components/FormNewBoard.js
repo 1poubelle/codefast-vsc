@@ -2,6 +2,7 @@
 'use client';
 import { useState } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const FormNewBoard = () => {
     const [formData, setFormData] = useState({
@@ -22,7 +23,8 @@ const FormNewBoard = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.boardName.trim()) {
-            alert('Board name is required');
+            toast.error('Board name is required');
+            console.log('Toast error: Board name is required');
             return;
         }
         
@@ -36,12 +38,18 @@ const FormNewBoard = () => {
             
             // Reset form and show success
             setFormData({ boardName: '', description: '', category: 'feedback' });
-            alert('Board created successfully!');
+            toast.success('Board created successfully!');
+            console.log('Toast success: Board created successfully!');
             console.log('Board created:', data.board);
             
         } catch (error) {
             const errorMessage = error.response?.data?.error || error.message || 'Failed to create board';
-            alert(errorMessage.includes('Unauthorized') ? 'Please sign in to create a board.' : `Failed to create board: ${errorMessage}`);
+            const toastMessage = errorMessage.includes('Unauthorized') 
+                ? 'Please sign in to create a board.' 
+                : `Failed to create board: ${errorMessage}`;
+            toast.error(toastMessage);
+            console.log('Toast error:', toastMessage);
+            console.log('Board creation error:', error);
         } finally {
             setIsLoading(false);
         }
@@ -146,6 +154,7 @@ const FormNewBoard = () => {
                     </div>
                 </div>
             </div>
+
         </div>
     );
 };
