@@ -36,20 +36,22 @@ const FormNewBoard = () => {
                 category: formData.category
             });
             
-            // Reset form and show success
+            // Only show success and reset form if request was successful
             setFormData({ boardName: '', description: '', category: 'feedback' });
-            toast.success('Board created successfully!');
             console.log('Toast success: Board created successfully!');
             console.log('Board created:', data.board);
+            toast.success('Board created successfully!');
+
             
         } catch (error) {
             const errorMessage = error.response?.data?.error || error.message || 'Failed to create board';
             const toastMessage = errorMessage.includes('Unauthorized') 
                 ? 'Please sign in to create a board.' 
                 : `Failed to create board: ${errorMessage}`;
-            toast.error(toastMessage);
             console.log('Toast error:', toastMessage);
             console.log('Board creation error:', error);
+            toast.error(toastMessage);
+
         } finally {
             setIsLoading(false);
         }
