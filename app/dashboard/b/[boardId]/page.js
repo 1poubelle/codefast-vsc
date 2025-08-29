@@ -3,6 +3,7 @@ import { authOptions } from "@/auth";
 import Board  from "@/models/Board";
 import { redirect } from "next/navigation";
 import connnectMongo from "@/libs/mongoose";
+import Link from "next/link";
 
 
 const getBoard = async (boardId) => {
@@ -36,6 +37,7 @@ export default async function FeedbackBoard({params}) {
     return (
         <div>
             <h1>{board.name}</h1>
+            <Link href={`/dashboard`}>Back to Dashboard</Link>
         </div>
     )
 }

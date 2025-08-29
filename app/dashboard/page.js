@@ -7,6 +7,7 @@ import connectMongo from "@/libs/mongoose";
 import User from "@/models/Users";
 import Board from "@/models/Board"; // eslint-disable-line no-unused-vars
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 // Server-side function to get the current authenticated user with their boards
 async function getUser() {
@@ -61,13 +62,15 @@ export default async function Dashboard() {
           <div className="grid gap-4">
             {/* Map through each board and render a card */}
             {user.boards.map((board) => (
-              <div key={board._id} className="p-4 border rounded-lg shadow-sm">
+              <div key={board._id} className="p-4 border rounded-lg shadow-sm hover:bg-neutral hover:text-neutral-content duration-300">
                 {/* Board name */}
-                <h3 className="font-medium">{board.name}</h3>
+                <Link href={`/dashboard/b/${board._id}`}>
+                  <h3 className="font-medium">{board.name}</h3>
+                </Link>
                 
                 {/* Board description (only if it exists) */}
                 {board.description && (
-                  <p className="text-gray-600 text-sm mt-1">{board.description}</p>
+                  <p className="text-gray-600 text-sm mt-1 ">{board.description}</p>
                 )}
                 
                 {/* Board category badge */}
