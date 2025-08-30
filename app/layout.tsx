@@ -22,6 +22,10 @@ export default function RootLayout({
         {children}
         <Toaster 
           position="top-center"
+          reverseOrder={false}
+          gutter={8}
+          containerClassName=""
+          containerStyle={{}}
           toastOptions={{
             duration: 4000,
             style: {
@@ -29,7 +33,7 @@ export default function RootLayout({
               color: '#fff',
             },
             success: {
-              duration: 3000,
+              duration: 1000,
               iconTheme: {
                 primary: '#4ade80',
                 secondary: '#fff',

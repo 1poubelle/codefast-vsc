@@ -1,6 +1,7 @@
 // Dashboard page - Main user dashboard showing all their boards
 import ButtonLogout from "../../components/ButtonLogout";
 import FormNewBoard from "../../components/FormNewBoard";
+import ButtonDeleteBoard from "../../components/ButtonDeleteBoard";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
 import connectMongo from "@/libs/mongoose";
@@ -63,14 +64,20 @@ export default async function Dashboard() {
             {/* Map through each board and render a card */}
             {user.boards.map((board) => (
               <div key={board._id} className="p-4 border rounded-lg shadow-sm hover:bg-neutral hover:text-neutral-content duration-300">
-                {/* Board name */}
-                <Link href={`/dashboard/b/${board._id}`}>
-                  <h3 className="font-medium">{board.name}</h3>
-                </Link>
+                {/* Header avec titre et bouton supprimer */}
+                <div className="flex justify-between items-start mb-2">
+                  {/* Board name */}
+                  <Link href={`/dashboard/b/${board._id}`}>
+                    <h3 className="font-medium hover:underline">{board.name}</h3>
+                  </Link>
+                  
+                  {/* Delete button */}
+                  <ButtonDeleteBoard boardId={board._id} boardName={board.name} />
+                </div>
                 
                 {/* Board description (only if it exists) */}
                 {board.description && (
-                  <p className="text-gray-600 text-sm mt-1 ">{board.description}</p>
+                  <p className="text-gray-600 text-sm mt-1">{board.description}</p>
                 )}
                 
                 {/* Board category badge */}

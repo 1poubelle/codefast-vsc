@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import connnectMongo from "@/libs/mongoose";
 import Link from "next/link";
 import CardBoardLink from "@/components/CardBoardLink";
+import ButtonDeleteBoard from "@/components/ButtonDeleteBoard";
 
 
 const getBoard = async (boardId) => {
@@ -39,9 +40,19 @@ export default async function FeedbackBoard({params}) {
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
             <div className="max-w-4xl mx-auto">
                 <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-200">
-                    <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">{board.name}</h1>
+                    {/* Header avec titre et bouton supprimer */}
+                    <div className="flex justify-between items-start mb-8">
+                        <h1 className="text-4xl font-bold text-gray-800">{board.name}</h1>
+                        <ButtonDeleteBoard 
+                            boardId={board._id} 
+                            boardName={board.name} 
+                            redirectAfterDelete={true}
+                        />
+                    </div>
+                    
                     <CardBoardLink boardId={board._id} />
-                    <div className="flex gap-4 justify-center">
+                    
+                    <div className="flex gap-4 justify-center mt-8">
                         <Link 
                             href={`/dashboard`}
                             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg inline-flex items-center gap-2"
@@ -51,8 +62,6 @@ export default async function FeedbackBoard({params}) {
                             </svg>
                             Back to Dashboard
                         </Link>
-                        
-                        
                     </div>
                 </div>
             </div>

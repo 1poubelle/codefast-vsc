@@ -88,3 +88,93 @@ export async function POST(req) {
         }, { status: 500 });
     }
 }
+
+export async function DELETE(req) {
+    try {
+        // Get board ID from query parameters
+        const { searchParams } = new URL(req.url);
+        const boardId = searchParams.get('id');
+        
+        if (!boardId) {
+            return NextResponse.json({ error: "Board ID is required" }, { status: 400 });
+        }
+        
+        // Check authentication
+        const session = await getServerSession(authOptions);
+        if (!session) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+        
+        // Connect to MongoDB with error handling
+        try {
+            await connectMongo();
+        } catch (dbError) {
+            console.error("Database connection failed:", dbError);
+            return NextResponse.json({ 
+                error: "Database connection failed. Please try again." 
+            }, { status: 503 });
+        }
+        
+        // Find the board and verify ownership
+        let board;
+        try {
+            board = await Board.findById(boardId).maxTimeMS(5000);
+        } catch (boardError) {
+            console.error("Board lookup failed:", boardError);
+            return NextResponse.json({ 
+                error: "Failed to find board. Please try again." 
+            }, { status: 500 });
+        }
+        
+        if (!board) {
+            return NextResponse.json({ error: "Board not found" }, { status: 404 });
+        }
+        
+        // Verify the board belongs to the authenticated user
+        if (board.userId.toString() !== session.user.id) {
+            return NextResponse.json({ error: "You can only delete your own boards" }, { status: 403 });
+        }
+        
+        // Delete the board
+        try {
+            await Board.findByIdAndDelete(boardId);
+            console.log('Board deleted successfully:', boardId);
+        } catch (deleteError) {
+            console.error("Board deletion failed:", deleteError);
+            return NextResponse.json({ 
+                error: "Failed to delete board. Please try again." 
+            }, { status: 500 });
+        }
+        
+        // Remove board from user's boards array
+        try {
+            await User.findByIdAndUpdate(
+                session.user.id, 
+                { $pull: { boards: boardId } }
+            );
+            console.log('Board removed from user boards array:', boardId);
+        } catch (updateError) {
+            console.error("User update failed:", updateError);
+            console.warn("Board deleted but failed to remove from user's boards array");
+        }
+        
+        return NextResponse.json({ 
+            message: "Board deleted successfully",
+            boardId 
+        });
+        
+    } catch (error) {
+        console.error("Board deletion error:", error);
+        
+        // Handle specific MongoDB timeout errors
+        if (error.message.includes('buffering timed out')) {
+            return NextResponse.json({ 
+                error: "Database connection timeout. Please check your connection and try again." 
+            }, { status: 503 });
+        }
+        
+        return NextResponse.json({ 
+            error: "An unexpected error occurred. Please try again." 
+        }, { status: 500 });
+    }
+}
