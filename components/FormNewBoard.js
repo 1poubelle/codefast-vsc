@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 const FormNewBoard = () => {
     const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const FormNewBoard = () => {
         category: 'feedback'
     });
     const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -41,6 +43,10 @@ const FormNewBoard = () => {
             console.log('Toast success: Board created successfully!');
             console.log('Board created:', data.board);
             toast.success('Board created successfully!');
+            
+            // Refresh the page to show the new board immediately
+            router.refresh();
+            console.log('Page refreshed to show new board');
 
             
         } catch (error) {
