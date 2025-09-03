@@ -48,8 +48,16 @@ export default async function Dashboard() {
       {/* Page title */}
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
       <div className="mb-4 flex justify-between items-center">  
-      {/* Button to checkout */}
-      <ButtonCheckout />
+      {/* Show checkout button only if user doesn't have premium access */}
+      {!user.hasAccess && <ButtonCheckout />}
+      
+      {/* Show premium status if user has access */}
+      {user.hasAccess && (
+        <div className="bg-green-100 text-green-800 px-3 py-1 rounded-lg text-sm font-medium">
+          ✓ Premium Active
+        </div>
+      )}
+      
       {/* Logout button component */}
       <ButtonLogout />
       </div>
