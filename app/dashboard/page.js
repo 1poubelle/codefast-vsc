@@ -9,6 +9,7 @@ import User from "@/models/Users";
 import Board from "@/models/Board"; // eslint-disable-line no-unused-vars
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import ButtonCheckout from "@/components/ButtonCheckout";
 
 // Server-side function to get the current authenticated user with their boards
 async function getUser() {
@@ -46,10 +47,12 @@ export default async function Dashboard() {
     <main className="p-6">
       {/* Page title */}
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-      
+      <div className="mb-4 flex justify-between items-center">  
+      {/* Button to checkout */}
+      <ButtonCheckout />
       {/* Logout button component */}
       <ButtonLogout />
-      
+      </div>
       {/* Form to create a new board */}
       <FormNewBoard />
       
