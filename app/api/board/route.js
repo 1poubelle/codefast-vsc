@@ -43,6 +43,14 @@ export async function POST(req) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
         
+        // Check if user has premium access before allowing board creation
+        if (!user.hasAccess) {
+            console.log('User attempted to create board without premium access:', user.email);
+            return NextResponse.json({ 
+                error: "Premium subscription required to create boards" 
+            }, { status: 403 });
+        }
+        
         // Create board with timeout handling
         let board;
         try {
@@ -133,6 +141,24 @@ export async function DELETE(req) {
         // Verify the board belongs to the authenticated user
         if (board.userId.toString() !== session.user.id) {
             return NextResponse.json({ error: "You can only delete your own boards" }, { status: 403 });
+        }
+        
+        // Check if user has premium access before allowing board deletion
+        let user;
+        try {
+            user = await User.findById(session.user.id);
+        } catch (userError) {
+            console.error("User lookup failed:", userError);
+            return NextResponse.json({ 
+                error: "Failed to verify user access" 
+            }, { status: 500 });
+        }
+        
+        if (!user || !user.hasAccess) {
+            console.log('User attempted to delete board without premium access:', session.user.email);
+            return NextResponse.json({ 
+                error: "Premium subscription required to delete boards" 
+            }, { status: 403 });
         }
         
         // Delete the board

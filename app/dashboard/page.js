@@ -61,8 +61,8 @@ export default async function Dashboard() {
       {/* Logout button component */}
       <ButtonLogout />
       </div>
-      {/* Form to create a new board */}
-      <FormNewBoard />
+      {/* Form to create a new board - pass user access status */}
+      <FormNewBoard userHasAccess={user.hasAccess} />
       
       {/* Section displaying user's boards */}
       <div className="mt-6">
@@ -82,8 +82,8 @@ export default async function Dashboard() {
                     <h3 className="font-medium hover:underline">{board.name}</h3>
                   </Link>
                   
-                  {/* Delete button */}
-                  <ButtonDeleteBoard boardId={board._id} boardName={board.name} />
+                  {/* Delete button - only show for premium users */}
+                  {user.hasAccess && <ButtonDeleteBoard boardId={board._id} boardName={board.name} />}
                 </div>
                 
                 {/* Board description (only if it exists) */}
