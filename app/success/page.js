@@ -28,7 +28,7 @@ export default function SuccessPage() {
                 <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
                     <h3 className="font-semibold text-gray-900 mb-2 text-sm">What happens next:</h3>
                     <ul className="text-xs text-gray-600 space-y-1">
-                        <li>• You'll receive a confirmation email shortly</li>
+                        <li>• You&apos;ll receive a confirmation email shortly</li>
                         <li>• Your subscription is now active</li>
                         <li>• Access all premium features immediately</li>
                     </ul>

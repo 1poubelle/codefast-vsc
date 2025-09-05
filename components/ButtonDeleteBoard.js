@@ -101,7 +101,7 @@ const ButtonDeleteBoard = ({ boardId, boardName, redirectAfterDelete = false }) 
                             <h3 className="font-semibold text-gray-900 text-lg">Confirmer la suppression</h3>
                         </div>
                         <p className="text-gray-700 mb-6">
-                            Êtes-vous sûr de vouloir supprimer le board <strong>"{boardName}"</strong> ? 
+                            Êtes-vous sûr de vouloir supprimer le board <strong>&quot;{boardName}&quot;</strong> ? 
                             Cette action est irréversible.
                         </p>
                         <div className="flex gap-3 justify-end">
