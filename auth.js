@@ -56,22 +56,32 @@ export const authOptions = {
           const { default: connectMongo } = await import('./libs/mongoose');
           const { default: User } = await import('./models/Users');
           
+          // Ensure connection is fully established before querying
+          console.log('Establishing connection for session callback');
           await connectMongo();
+          
+          // Add small delay to ensure connection is ready in serverless environment
+          await new Promise(resolve => setTimeout(resolve, 100));
+          
+          console.log('Querying user for session:', session.user.email);
           const customUser = await User.findOne({ email: session.user.email });
           
           if (customUser) {
             session.user.id = customUser._id.toString();
+            console.log('Found custom user:', customUser._id);
           } else {
             session.user.id = token.sub;
+            console.log('Using token sub as user ID:', token.sub);
           }
         } catch (error) {
           console.error('Error in session callback:', error);
+          // Fallback to token sub if database query fails
           session.user.id = token.sub;
         }
       }
       return session;
     },
-    async signIn({ user, account, profile, email, credentials }) {
+    async signIn({ user, account }) {
       // Ensure user exists in our custom User model
       if (account?.provider === 'email') {
         try {
