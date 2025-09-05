@@ -10,6 +10,7 @@ import Board from "@/models/Board"; // eslint-disable-line no-unused-vars
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import ButtonCheckout from "@/components/ButtonCheckout";
+import ButtonPortal from "@/components/ButtonPortal";
 
 // Server-side function to get the current authenticated user with their boards
 async function getUser() {
@@ -51,10 +52,13 @@ export default async function Dashboard() {
       {/* Show checkout button only if user doesn't have premium access */}
       {!user.hasAccess && <ButtonCheckout />}
       
-      {/* Show premium status if user has access */}
+      {/* Show premium status and portal button if user has access */}
       {user.hasAccess && (
-        <div className="bg-green-100 text-green-800 px-3 py-1 rounded-lg text-sm font-medium">
-          ✓ Premium Active
+        <div className="flex items-center gap-3">
+          <div className="bg-green-100 text-green-800 px-3 py-1 rounded-lg text-sm font-medium">
+            ✓ Premium Active
+          </div>
+          <ButtonPortal />
         </div>
       )}
       

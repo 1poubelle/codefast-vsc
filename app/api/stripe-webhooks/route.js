@@ -42,6 +42,16 @@ export async function POST(req) {
                 await handleCheckoutSessionCompleted(event.data.object);
                 break;
                 
+            case 'customer.subscription.updated':
+                console.log('Processing customer.subscription.updated event');
+                await handleSubscriptionUpdated(event.data.object);
+                break;
+                
+            case 'customer.subscription.deleted':
+                console.log('Processing customer.subscription.deleted event');
+                await handleSubscriptionDeleted(event.data.object);
+                break;
+                
             default:
                 // Log unknown event types for debugging
                 console.log('Unhandled event type:', event.type);
@@ -103,5 +113,91 @@ async function handleCheckoutSessionCompleted(session) {
         // Log any errors during user update
         console.error('Error updating user access:', error);
         throw error; // Re-throw to be caught by main error handler
+    }
+}
+
+// Function to handle subscription updates (plan changes, renewals, etc.)
+async function handleSubscriptionUpdated(subscription) {
+    console.log('Handling subscription updated:', subscription.id);
+    console.log('Subscription status:', subscription.status);
+    
+    try {
+        // Connect to MongoDB database
+        await connectMongo();
+        console.log('Connected to database for subscription update');
+        
+        // Get the customer ID from the subscription
+        const customerId = subscription.customer;
+        console.log('Customer ID:', customerId);
+        
+        // Find user by Stripe customer ID
+        const user = await Users.findOne({ customerId: customerId });
+        if (!user) {
+            console.error('User not found for customer ID:', customerId);
+            throw new Error('User not found');
+        }
+        
+        console.log('User found for subscription update:', user.email);
+        
+        // Update user access based on subscription status
+        // Active subscriptions (active, trialing) give access
+        const hasAccess = ['active', 'trialing'].includes(subscription.status);
+        console.log('Setting hasAccess to:', hasAccess);
+        
+        // Update user in database
+        const updatedUser = await Users.findByIdAndUpdate(
+            user._id,
+            { hasAccess: hasAccess },
+            { new: true, runValidators: true }
+        );
+        
+        if (updatedUser) {
+            console.log('User access updated successfully:', updatedUser.email);
+            console.log('User hasAccess:', updatedUser.hasAccess);
+        }
+        
+    } catch (error) {
+        console.error('Error handling subscription update:', error);
+        throw error;
+    }
+}
+
+// Function to handle subscription cancellation/deletion
+async function handleSubscriptionDeleted(subscription) {
+    console.log('Handling subscription deleted:', subscription.id);
+    
+    try {
+        // Connect to MongoDB database
+        await connectMongo();
+        console.log('Connected to database for subscription deletion');
+        
+        // Get the customer ID from the subscription
+        const customerId = subscription.customer;
+        console.log('Customer ID:', customerId);
+        
+        // Find user by Stripe customer ID
+        const user = await Users.findOne({ customerId: customerId });
+        if (!user) {
+            console.error('User not found for customer ID:', customerId);
+            throw new Error('User not found');
+        }
+        
+        console.log('User found for subscription cancellation:', user.email);
+        
+        // Revoke access when subscription is cancelled/deleted
+        const updatedUser = await Users.findByIdAndUpdate(
+            user._id,
+            { hasAccess: false },
+            { new: true, runValidators: true }
+        );
+        
+        if (updatedUser) {
+            console.log('User access revoked successfully:', updatedUser.email);
+            console.log('User hasAccess:', updatedUser.hasAccess);
+        }
+        
+    } catch (error) {
+        console.error('Error handling subscription deletion:', error);
+        throw error;
     }
 }

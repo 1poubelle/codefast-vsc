@@ -29,7 +29,7 @@ const ButtonCheckout = () => {
             console.log('Making checkout request with URLs:', { successUrl, cancelUrl });
             
             // Make POST request to create checkout session using axios
-            const response = await axios.post('/api/billing/create-checkout', {
+            const response = await axios.post('/api/billing/create-checkout-session', {
                 successUrl,
                 cancelUrl,
             });
