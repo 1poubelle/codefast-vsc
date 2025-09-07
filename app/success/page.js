@@ -1,9 +1,70 @@
 // Import necessary components and icons
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/auth";
+import connectMongo from "@/libs/mongoose";
+import Users from "@/models/Users";
+import Stripe from "stripe";
 
 // Success page component - shown after successful Stripe payment
-export default function SuccessPage() {
+export default async function SuccessPage({ searchParams }) {
+    console.log('Success page loaded with params:', searchParams);
+    
+    // Get current user session
+    const session = await getServerSession(authOptions);
+    console.log('User session on success page:', session?.user?.email);
+    console.log('User ID from session:', session?.user?.id);
+    
+    // If user is logged in and we have a session_id, grant access as fallback
+    if (session?.user && searchParams?.session_id) {
+        console.log('Processing fallback access grant for session:', searchParams.session_id);
+        
+        try {
+            // Initialize Stripe to verify the session
+            const stripe = new Stripe(process.env.STRIPE_API_KEY);
+            const checkoutSession = await stripe.checkout.sessions.retrieve(searchParams.session_id);
+            console.log('Retrieved Stripe session:', checkoutSession.id);
+            console.log('Session payment status:', checkoutSession.payment_status);
+            
+            // Only grant access if payment was successful
+            if (checkoutSession.payment_status === 'paid') {
+                console.log('Payment confirmed, granting access as fallback');
+                
+                await connectMongo();
+                console.log('Connected to database for fallback access grant');
+                
+                // Find and update user
+                const user = await Users.findById(session.user.id);
+                console.log('User found for fallback:', user?.email);
+                
+                if (user && !user.hasAccess) {
+                    console.log('User does not have access yet, granting now');
+                    
+                    const updatedUser = await Users.findByIdAndUpdate(
+                        user._id,
+                        {
+                            hasAccess: true,
+                            customerId: checkoutSession.customer || 'fallback_' + Date.now()
+                        },
+                        { new: true, runValidators: true }
+                    );
+                    
+                    console.log('Fallback access granted successfully');
+                    console.log('User hasAccess:', updatedUser.hasAccess);
+                    console.log('User customerId:', updatedUser.customerId);
+                } else if (user?.hasAccess) {
+                    console.log('User already has access');
+                } else {
+                    console.log('User not found for fallback access grant');
+                }
+            } else {
+                console.log('Payment not completed, not granting access');
+            }
+        } catch (error) {
+            console.error('Error in fallback access grant:', error);
+        }
+    }
     return (
         <div className="min-h-screen flex items-center justify-center p-4">
             {/* Main success card container - fully responsive using Tailwind */}

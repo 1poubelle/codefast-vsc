@@ -62,8 +62,8 @@ export async function POST(req) {
             // Define what the user is buying - the price ID comes from Stripe dashboard
             line_items: [{ price: process.env.STRIPE_PRICE_ID, quantity: 1 }],
             
-            // Where to redirect user after successful payment
-            success_url: body.successUrl,
+            // Where to redirect user after successful payment - include session_id for fallback processing
+            success_url: `${body.successUrl}?session_id={CHECKOUT_SESSION_ID}`,
             
             // Where to redirect user if they cancel the payment
             cancel_url: body.cancelUrl,
